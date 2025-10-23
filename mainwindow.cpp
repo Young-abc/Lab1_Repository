@@ -24,6 +24,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//数字点击
 void MainWindow::BtnNumClicked()
 {
     QString digit = qobject_cast<QPushButton *>(sender())->text();
@@ -37,6 +38,8 @@ void MainWindow::BtnNumClicked()
     ui->display->setText(operand);
 }
 
+
+//小数点按钮
 void MainWindow::on_BtnPoint_clicked()
 {
     QString digit = qobject_cast<QPushButton *>(sender())->text();
@@ -49,6 +52,8 @@ void MainWindow::on_BtnPoint_clicked()
 }
 
 
+
+//删除按钮
 void MainWindow::on_BtnDelete_clicked()
 {
     operand = operand.left(operand.length()-1);
@@ -57,6 +62,7 @@ void MainWindow::on_BtnDelete_clicked()
 }
 
 
+//清空按钮C
 void MainWindow::on_BtnC_clicked()
 {
     operand.clear();
@@ -64,6 +70,8 @@ void MainWindow::on_BtnC_clicked()
 }
 
 
+
+//改变符号按钮
 void MainWindow::on_BtnChangeAM_clicked()
 {
     if (operand.isEmpty() || operand == '0') return;
@@ -77,6 +85,7 @@ void MainWindow::on_BtnChangeAM_clicked()
 }
 
 
+//百分号
 void MainWindow::on_BtnPercentage_clicked()
 {
     if (operand.isEmpty() || operand == '0') return;
@@ -88,6 +97,8 @@ void MainWindow::on_BtnPercentage_clicked()
 }
 
 
+
+//倒数
 void MainWindow::on_BtnCountdown_clicked()
 {
     if (operand.isEmpty() || operand == '0') return;
@@ -96,5 +107,83 @@ void MainWindow::on_BtnCountdown_clicked()
     num = 1/num;
     operand = QString::number(num);
     ui->display->setText(operand);
+}
+
+//CE清除按钮
+void MainWindow::on_BtnCE_clicked()
+{
+    // 清除当前正在输入的操作数（保留之前的运算状态，如已输入的运算符和上一个操作数）
+    operand.clear();
+    // 更新显示区域为空（表示当前无输入）
+    ui->display->setText(operand);
+}
+
+
+
+void MainWindow::on_BtnSquare_clicked()
+{
+    // 若当前无输入，不执行操作
+    if (operand.isEmpty()) {
+        return;
+    }
+
+    // 将当前输入的字符串转为数字
+    bool ok;
+    double num = operand.toDouble(&ok);
+
+    // 转换成功则计算平方，否则显示错误
+    if (ok) {
+        double result = num * num;  // 计算平方
+
+        // // 处理显示格式：若为整数则不带小数位，否则正常显示
+        // if (result == result.toLongLong()) {
+        //     operand = QString::number(result.toLongLong());
+        // } else {
+        //     operand = QString::number(result);
+        // }
+
+        operand = QString::number(result);
+
+        // 更新显示
+        ui->display->setText(operand);
+    } else {
+        // 输入无效时显示错误（例如输入非数字内容）
+        ui->display->setText("错误");
+        operand.clear();  // 清空当前输入，等待重新输入
+    }
+}
+
+
+void MainWindow::on_BtnSquareRoot_clicked()
+{
+    // 若当前无输入，不执行操作
+    if (operand.isEmpty()) {
+        return;
+    }
+
+    // 将当前输入的字符串转为数字
+    bool ok;
+    double num = operand.toDouble(&ok);
+
+    // 转换成功且数字非负时计算平方根，否则显示错误
+    if (ok && num >= 0) {
+        double result = sqrt(num);  // 调用数学库的开平方函数
+
+        // // 处理显示格式：整数结果不带小数位，否则正常显示
+        // if (result == result.toLongLong()) {
+        //     operand = QString::number(result.toLongLong());
+        // } else {
+        //     operand = QString::number(result);
+        // }
+
+        operand = QString::number(result);
+
+        // 更新显示
+        ui->display->setText(operand);
+    } else {
+        // 输入无效（非数字）或负数开根号，显示错误
+        ui->display->setText("错误");
+        operand.clear();  // 清空当前输入，等待重新输入
+    }
 }
 

@@ -34,6 +34,12 @@ private slots:
 
     void on_BtnCountdown_clicked();
 
+    void on_BtnCE_clicked();
+
+    void on_BtnSquare_clicked();
+
+    void on_BtnSquareRoot_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
