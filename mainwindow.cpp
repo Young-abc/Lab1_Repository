@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QKeyEvent>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -123,9 +123,7 @@ void MainWindow::on_BtnCountdown_clicked()
 //CE清除按钮
 void MainWindow::on_BtnCE_clicked()
 {
-    // 清除当前正在输入的操作数（保留之前的运算状态，如已输入的运算符和上一个操作数）
     operand.clear();
-    // 更新显示区域为空（表示当前无输入）
     ui->display->setText(operand);
 }
 
@@ -138,29 +136,19 @@ void MainWindow::on_BtnSquare_clicked()
         return;
     }
 
-    // 将当前输入的字符串转为数字
     bool ok;
     double num = operand.toDouble(&ok);
 
-    // 转换成功则计算平方，否则显示错误
     if (ok) {
         double result = num * num;  // 计算平方
-
-        // // 处理显示格式：若为整数则不带小数位，否则正常显示
-        // if (result == result.toLongLong()) {
-        //     operand = QString::number(result.toLongLong());
-        // } else {
-        //     operand = QString::number(result);
-        // }
 
         operand = QString::number(result);
 
         // 更新显示
         ui->display->setText(operand);
     } else {
-        // 输入无效时显示错误（例如输入非数字内容）
         ui->display->setText("错误");
-        operand.clear();  // 清空当前输入，等待重新输入
+        operand.clear();
     }
 }
 
@@ -178,21 +166,13 @@ void MainWindow::on_BtnSquareRoot_clicked()
 
     // 转换成功且数字非负时计算平方根，否则显示错误
     if (ok && num >= 0) {
-        double result = sqrt(num);  // 调用数学库的开平方函数
-
-        // // 处理显示格式：整数结果不带小数位，否则正常显示
-        // if (result == result.toLongLong()) {
-        //     operand = QString::number(result.toLongLong());
-        // } else {
-        //     operand = QString::number(result);
-        // }
+        double result = sqrt(num);
 
         operand = QString::number(result);
 
         // 更新显示
         ui->display->setText(operand);
     } else {
-        // 输入无效（非数字）或负数开根号，显示错误
         ui->display->setText("错误");
         operand.clear();  // 清空当前输入，等待重新输入
     }
@@ -226,12 +206,10 @@ QString MainWindow::calculation(bool *ok)
             result = operand1 / operand2;
         }
         else;
-        // ui->statusbar->showMessage("calculation is in progress");
     }
     else {
         result = operands.front().toDouble();
         operands.pop_front();
-        // ui->statusbar->showMessage(QString("operands is %1,opcodes is %2").arg(operands.size()).arg(opcodes.size()));
     }
     return QString::number(result);
 }
@@ -271,5 +249,49 @@ void MainWindow::on_BtnEquals_clicked()
     QString result = calculation();
     operands.push_front(result);
     ui->display->setText(result);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() >= Qt::Key_0 && event->key() <= Qt::Key_9) {
+        // 模拟数字按钮点击
+        QString num = event->text();
+        if (num == "0") ui->BtnNum0->animateClick();
+        else if (num == "1") ui->BtnNum1->animateClick();
+        else if (num == "2") ui->BtnNum2->animateClick();
+        else if (num == "3") ui->BtnNum3->animateClick();
+        else if (num == "4") ui->BtnNum4->animateClick();
+        else if (num == "5") ui->BtnNum5->animateClick();
+        else if (num == "6") ui->BtnNum6->animateClick();
+        else if (num == "7") ui->BtnNum7->animateClick();
+        else if (num == "8") ui->BtnNum8->animateClick();
+        else if (num == "9") ui->BtnNum9->animateClick();
+    }
+    else if (event->key() == Qt::Key_Period) { // 小数点
+        ui->BtnPoint->animateClick();
+    }
+    // 运算符处理
+    else if (event->key() == Qt::Key_Plus) { // +
+        ui->BtnAdd->animateClick();
+    }
+    else if (event->key() == Qt::Key_Minus) { // -
+        ui->BtnMinus->animateClick();
+    }
+    else if (event->key() == Qt::Key_Asterisk) { // *
+        ui->BtnMultiplication->animateClick();
+    }
+    else if (event->key() == Qt::Key_Slash) { // /
+        ui->BtnDivision->animateClick();
+    }
+    else if (event->key() == Qt::Key_Percent) { // %
+        ui->BtnPercentage->animateClick();
+    }
+    else if (event->key() == Qt::Key_Return) { // =
+        ui->BtnEquals->animateClick();
+    }
+    else if (event->key() == Qt::Key_Backspace) { // 删除
+        ui->BtnDelete->animateClick();
+    }
+    else;
 }
 

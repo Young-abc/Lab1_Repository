@@ -50,6 +50,8 @@ private slots:
 
     void on_BtnEquals_clicked();
 
+    virtual void keyPressEvent(QKeyEvent *event);
+
 private:
     Ui::MainWindow *ui;
 };
