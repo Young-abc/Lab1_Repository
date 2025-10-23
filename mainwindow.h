@@ -17,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QString operand;
 
 private slots:
     void BtnNumClicked();
@@ -24,6 +25,14 @@ private slots:
     void on_BtnPoint_clicked();
 
     void on_BtnDelete_clicked();
+
+    void on_BtnC_clicked();
+
+    void on_BtnChangeAM_clicked();
+
+    void on_BtnPercentage_clicked();
+
+    void on_BtnCountdown_clicked();
 
 private:
     Ui::MainWindow *ui;

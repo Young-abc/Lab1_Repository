@@ -26,26 +26,75 @@ MainWindow::~MainWindow()
 
 void MainWindow::BtnNumClicked()
 {
-    QString str = ui->display->text();
-    str += qobject_cast<QPushButton *>(sender())->text();
-    ui->display->setText(str);
-    // ui->statusbar->showMessage(qobject_cast<QPushButton *>(sender())->text()+"button0 clicked");
+    QString digit = qobject_cast<QPushButton *>(sender())->text();
+
+    if(digit == "0" && operand == "0")
+        digit = "";
+
+    if(digit != "0" && operand == "0")
+        operand = "";
+    operand += digit;
+    ui->display->setText(operand);
 }
 
 void MainWindow::on_BtnPoint_clicked()
 {
-    QString str = ui->display->text();
-    if(!str.contains("."))
-        str += qobject_cast<QPushButton *>(sender())->text();
-    ui->display->setText(str);
+    QString digit = qobject_cast<QPushButton *>(sender())->text();
+    if(!operand.contains(".")){
+        if(ui->display->text().length() == 0 && digit == ".")
+            operand = '0';
+        operand += digit;
+    }
+    ui->display->setText(operand);
 }
 
 
 void MainWindow::on_BtnDelete_clicked()
 {
-    QString str = ui->display->text();
-    str = str.left(str.length()-1);
-    ui->display->setText(str);
+    operand = operand.left(operand.length()-1);
+    ui->display->setText(operand);
 
+}
+
+
+void MainWindow::on_BtnC_clicked()
+{
+    operand.clear();
+    ui->display->setText(operand);
+}
+
+
+void MainWindow::on_BtnChangeAM_clicked()
+{
+    if (operand.isEmpty() || operand == '0') return;
+
+    if (operand.startsWith("-")) {
+        operand.remove(0, 1);  // 移除负号
+    } else {
+        operand.prepend("-");  // 添加负号
+    }
+    ui->display->setText(operand);
+}
+
+
+void MainWindow::on_BtnPercentage_clicked()
+{
+    if (operand.isEmpty() || operand == '0') return;
+
+    double num = operand.toDouble();
+    num /= 100;  // 转为百分比
+    operand = QString::number(num);
+    ui->display->setText(operand);
+}
+
+
+void MainWindow::on_BtnCountdown_clicked()
+{
+    if (operand.isEmpty() || operand == '0') return;
+
+    double num = operand.toDouble();
+    num = 1/num;
+    operand = QString::number(num);
+    ui->display->setText(operand);
 }
 
