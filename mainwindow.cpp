@@ -17,12 +17,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->BtnNum7,SIGNAL(clicked()),this,SLOT(BtnNumClicked()));
     connect(ui->BtnNum8,SIGNAL(clicked()),this,SLOT(BtnNumClicked()));
     connect(ui->BtnNum9,SIGNAL(clicked()),this,SLOT(BtnNumClicked()));
+    connect(ui->BtnAdd,SIGNAL(clicked()),this,SLOT(binaryOperatorClicked()));
+    connect(ui->BtnMinus,SIGNAL(clicked()),this,SLOT(binaryOperatorClicked()));
+    connect(ui->BtnMultiplication,SIGNAL(clicked()),this,SLOT(binaryOperatorClicked()));
+    connect(ui->BtnDivision,SIGNAL(clicked()),this,SLOT(binaryOperatorClicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 //数字点击
 void MainWindow::BtnNumClicked()
@@ -67,6 +72,12 @@ void MainWindow::on_BtnC_clicked()
 {
     operand.clear();
     ui->display->setText(operand);
+    while(operands.size()!=0){
+        operands.pop_back();
+    }
+    while(opcodes.size()!=0){
+        opcodes.pop_back();
+    }
 }
 
 
@@ -185,5 +196,80 @@ void MainWindow::on_BtnSquareRoot_clicked()
         ui->display->setText("错误");
         operand.clear();  // 清空当前输入，等待重新输入
     }
+}
+
+QString MainWindow::calculation(bool *ok)
+{
+    double result = 0;
+
+    if(operands.size() == 2 &&opcodes.size() > 0){
+
+        double operand1 = operands.front().toDouble();
+        operands.pop_front();
+        double operand2 = operands.front().toDouble();
+        operands.pop_front();
+
+        //取操作符
+        QString op = opcodes.front();
+        opcodes.pop_front();
+
+        if(op == "+"){
+            result = operand1 + operand2;
+        }
+        else if(op == "-"){
+            result = operand1 - operand2;
+        }
+        else if(op == "×"){
+            result = operand1 * operand2;
+        }
+        else if(op == "÷"){
+            result = operand1 / operand2;
+        }
+        else;
+        // ui->statusbar->showMessage("calculation is in progress");
+    }
+    else {
+        result = operands.front().toDouble();
+        operands.pop_front();
+        // ui->statusbar->showMessage(QString("operands is %1,opcodes is %2").arg(operands.size()).arg(opcodes.size()));
+    }
+    return QString::number(result);
+}
+
+//运算符号
+void MainWindow::binaryOperatorClicked()
+{
+    // ui->statusbar->showMessage("last operand "+operand);
+    QString opcode = qobject_cast<QPushButton *>(sender())->text();
+
+    //把运算符放入运算符堆栈
+    opcodes.push_back(opcode);
+
+    if(operand != ""){
+
+        //把操作数放入操作数堆栈
+        operands.push_back(operand);
+        operand = "";
+
+    }
+
+    QString result = calculation();
+
+    operands.push_front(result);
+    ui->display->setText(result);
+}
+
+
+//等于号
+void MainWindow::on_BtnEquals_clicked()
+{
+    if(operand != ""){
+        operands.push_back(operand);
+        operand = "";
+    }
+
+    QString result = calculation();
+    operands.push_front(result);
+    ui->display->setText(result);
 }
 
