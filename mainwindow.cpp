@@ -49,6 +49,7 @@ void MainWindow::on_BtnPoint_clicked()
 {
     QString digit = qobject_cast<QPushButton *>(sender())->text();
     if(!operand.contains(".")){
+        //直接输入小数点，自动补前面的0
         if(ui->display->text().length() == 0 && digit == ".")
             operand = '0';
         operand += digit;
@@ -61,13 +62,24 @@ void MainWindow::on_BtnPoint_clicked()
 //删除按钮
 void MainWindow::on_BtnDelete_clicked()
 {
+    //操作数为空或为0不作处理
+    if (operand.isEmpty() || operand == '0') return;
+
+    //删除操作数右一位
     operand = operand.left(operand.length()-1);
     ui->display->setText(operand);
 
 }
 
+//CE清除按钮（清除当前操作数）
+void MainWindow::on_BtnCE_clicked()
+{
+    operand.clear();
+    ui->display->setText(operand);
+}
 
-//清空按钮C
+
+//清空按钮C（清除所有操作数以及操作符）
 void MainWindow::on_BtnC_clicked()
 {
     operand.clear();
@@ -120,15 +132,7 @@ void MainWindow::on_BtnCountdown_clicked()
     ui->display->setText(operand);
 }
 
-//CE清除按钮
-void MainWindow::on_BtnCE_clicked()
-{
-    operand.clear();
-    ui->display->setText(operand);
-}
-
-
-
+//平方
 void MainWindow::on_BtnSquare_clicked()
 {
     // 若当前无输入，不执行操作
@@ -152,7 +156,7 @@ void MainWindow::on_BtnSquare_clicked()
     }
 }
 
-
+//根号
 void MainWindow::on_BtnSquareRoot_clicked()
 {
     // 若当前无输入，不执行操作
@@ -174,10 +178,11 @@ void MainWindow::on_BtnSquareRoot_clicked()
         ui->display->setText(operand);
     } else {
         ui->display->setText("错误");
-        operand.clear();  // 清空当前输入，等待重新输入
+        operand.clear();
     }
 }
 
+//计算函数
 QString MainWindow::calculation(bool *ok)
 {
     double result = 0;
